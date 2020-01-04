@@ -114,7 +114,6 @@ create table prefs (
 )
 ENGINE = InnoDB;
 
-
 create table ratings (
     uid int not null,
     sid int not null,
@@ -145,7 +144,7 @@ create table history (
         on delete cascade,
     foreign key (cid) references chapters(cid)
         on update CASCADE
-        on delete cascade,
+        on delete cascade
 )
 
 ENGINE = InnoDB;
