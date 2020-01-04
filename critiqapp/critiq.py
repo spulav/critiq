@@ -1,3 +1,5 @@
+from critiqapp import app
+
 from flask import (Flask, render_template, make_response, url_for, request,
                    redirect, flash, session, send_from_directory, jsonify
                    )
@@ -6,29 +8,13 @@ from werkzeug import secure_filename
 import sys,os,random
 from threading import Thread, Lock
 
-import lookup
+import critiqapp.lookup
 import bleach
 import bcrypt
-
-UPLOAD_FOLDER = '/uploaded/'
-ALLOWED_EXTENSIONS = {'txt', 'png', 'jpg', 'jpeg', 'gif'}
 
 CONN = 'spulavar_db'
 
 lock = Lock()
-
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-app.secret_key = ''.join([ random.choice(('ABCDEFGHIJKLMNOPQRSTUVXYZ' +
-                                          'abcdefghijklmnopqrstuvxyz' +
-                                          '0123456789'))
-                           for i in range(20) ])
-
-# This gets us better error messages for certain common request errors
-app.config['TRAP_BAD_REQUEST_ERRORS'] = True
-
-app.config['PERMANENT_SESSION_LIFETIME'] =  300000 #about a month
 
 @app.route('/', methods=["GET", "POST"])
 def index():
@@ -608,14 +594,3 @@ def markFinished(sid):
     else:
         flash('Log in to manage your works.')
         return redirect(url_for('index'))
-
-if __name__ == '__main__':
-
-    if len(sys.argv) > 1:
-        # arg, if any, is the desired port number
-        port = int(sys.argv[1])
-        assert(port>1024)
-    else:
-        port = os.getuid()
-    app.debug = True
-    app.run('0.0.0.0',port)
