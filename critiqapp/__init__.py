@@ -1,6 +1,5 @@
 from flask import Flask
 import random
-import critiqapp.lookup
 
 app = Flask(__name__)
 
