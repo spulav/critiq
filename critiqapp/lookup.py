@@ -19,7 +19,7 @@ def getConn(db):
 def insertPass(conn, username, hashed_str):
     '''inserts user into database when they make an account'''
     curs = dbi.cursor(conn)
-    curs.execute('lock tables users')
+    curs.execute('lock tables users write')
     curs.execute('''INSERT INTO users(uid,username,passhash)
                             VALUES(null,%s,%s)''',
                          [username, hashed_str])

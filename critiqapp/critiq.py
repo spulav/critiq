@@ -8,7 +8,7 @@ from werkzeug import secure_filename
 import sys,os,random
 from threading import Thread, Lock
 
-import critiqapp.lookup
+import critiqapp.lookup as lookup
 import bleach
 import bcrypt
 
@@ -63,7 +63,7 @@ def join():
         try:
             lookup.insertPass(conn, username, hashed_str)
         except Exception as err: # this is not getting thrown
-            flash('That username is taken.')#: {}'.format(repr(err)))
+            flash(repr(err))#: {}'.format(repr(err)))
             return redirect(url_for('index'))
         uid = lookup.getUIDFirst(conn)
         lock.release()
