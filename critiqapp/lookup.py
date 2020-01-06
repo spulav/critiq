@@ -16,22 +16,19 @@ def getConn(db):
 
 # ------------------------ Passwords and UIDs
 
-def insertPass(conn, username, hashed_str):
+def insertUser(conn, username, hashed_str):
     '''inserts user into database when they make an account'''
     curs = dbi.cursor(conn)
+    curs.execute('start transaction')
     curs.execute('lock tables users write')
     curs.execute('''INSERT INTO users(uid,username,passhash)
                             VALUES(null,%s,%s)''',
                          [username, hashed_str])
-    curs.execute('unlock tables')
-
-def getUIDFirst(conn):
-    '''gets last inserted uid'''
-    curs = dbi.cursor(conn)
     curs.execute('select LAST_INSERT_ID()')
     row = curs.fetchone()
-    print(row)
     uid = row[0]
+    curs.execute('unlock tables')
+    curs.execute('commit')
     return uid
 
 def getUID(conn, username):
@@ -39,7 +36,7 @@ def getUID(conn, username):
     curs.execute('''select uid from users where username=%s''', [username])
     return curs.fetchone()
 
-def getLogin(conn, username):
+def getUser(conn, username):
     '''gets hashed password to check for login'''
     curs = dbi.dictCursor(conn)
     curs.execute('''SELECT uid,passhash

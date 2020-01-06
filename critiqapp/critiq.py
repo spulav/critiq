@@ -16,105 +16,12 @@ CONN = 'spulavar_db'
 
 lock = Lock()
 
-@app.route('/', methods=["GET", "POST"])
-def index():
-
-    if request.method == "POST":
-        kind = request.form.get('search_kind')
-        term = (request.form.get('select_tag') if kind == "tag" 
-                else request.form.get('search_term'))
-        # print ("term", term)
-
-        return redirect(url_for('worksByTerm', search_kind=kind, search_term=term))    
-    else:
-        if 'username' in session:
-            return redirect( url_for('recommendations'))
-        else:
-            return render_template('main.html', page_title="Welcome to Critiq")
-
 @app.route('/getTags/', methods=["POST"])
 def getTags():
     conn = lookup.getConn(CONN)
     tags = lookup.getTags(conn, 'genre')
 
     return jsonify( {'tags': tags} )
-
-@app.route('/join/', methods=["POST"])
-def join():
-    try:
-        username = request.form['username']
-        passwd1 = request.form['password1']
-        passwd2 = request.form['password2']
-        if passwd1 != passwd2:
-            flash('Passwords do not match')
-            return redirect( url_for('index'))
-        
-        #password policy
-        #This policy was not always in effect, so if you want to,
-        #you can test with legacy shorter username/password pairs
-        if len(passwd1) < 12:
-            flash('Passwords must be at least 12 characters long')
-            return redirect( url_for('index'))
-        hashed = bcrypt.hashpw(passwd1.encode('utf-8'), bcrypt.gensalt())
-        hashed_str = hashed.decode('utf-8')
-
-        conn = lookup.getConn(CONN)
-        lock.acquire()
-        try:
-            lookup.insertPass(conn, username, hashed_str)
-        except Exception as err: # this is not getting thrown
-            flash(repr(err))#: {}'.format(repr(err)))
-            return redirect(url_for('index'))
-        uid = lookup.getUIDFirst(conn)
-        lock.release()
-        # print(uid)
-        flash('FYI, you were issued UID {}'.format(uid))
-        session['username'] = username
-        session['uid'] = uid
-        session['logged_in'] = True
-        # session['visits'] = 1
-        return redirect( url_for('profile', username=username) )
-    except Exception as err:
-        flash('Form submission error '+str(err))
-        return redirect( url_for('index') )
-
-@app.route('/login/', methods=["POST"])
-def login():
-    try:
-        username = request.form['username']
-        passwd = request.form['password']
-        conn = lookup.getConn(CONN)
-        row = lookup.getLogin(conn, username)
-        if row is None:
-            # Same response as wrong password,
-            # so no information about what went wrong
-            flash('Login incorrect. Try again or join')
-            return redirect( url_for('index'))
-        hashed = row['passhash'] 
-        
-        hashed2 = bcrypt.hashpw(passwd.encode('utf-8'),hashed.encode('utf-8'))#.encode('utf-8'))
-        hashed2_str = hashed2.decode('utf-8')
-        
-        if hashed2_str == hashed:
-            flash('Successfully logged in as '+username)
-            session['username'] = username
-            session['uid'] = row['uid']
-            uid=session['uid']
-
-            unwanted = lookup.getPrefs(conn, uid, True)
-            session['filters'] = unwanted
-            # print (session)
-
-            session['logged_in'] = True
-            session.permanent = True
-            return redirect( url_for('recommendations') )
-        else:
-            flash('Login incorrect. Try again or join')
-            return redirect( url_for('index'))
-    except Exception as err:
-        flash('Form submission error: '+str(err))
-        return redirect( url_for('index') )
-
 
 @app.route('/profile/<username>', methods = ["GET", "POST"]) #allow everyone to access all profiles, only let logged in users change own data
 def profile(username):

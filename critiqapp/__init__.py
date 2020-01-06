@@ -11,4 +11,22 @@ app.config['SECRET_KEY'] = ''.join([ random.choice(('ABCDEFGHIJKLMNOPQRSTUVXYZ' 
                            for i in range(20) ])
 app.config['UPLOAD_FOLDER'] = '/uploaded/'
 
+# ============== User Management =============
+
+def login_required(view):
+    @wraps(view)
+    def wrap(*args, **kwargs):
+        if session.get('logged_in') == True:
+            return f(*args, **kwargs)
+        else:
+            flash("You need to login first")
+            return redirect(url_for('index'))
+    return wrap
+
+def get_id():
+    return session['uid']
+
+def is_logged_in():
+    return session.get('logged_in') == True
+
 import critiqapp.critiq
