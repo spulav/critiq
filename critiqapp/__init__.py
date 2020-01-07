@@ -1,5 +1,9 @@
 from flask import Flask
 import random
+from .dashboard import board
+from .logins import login
+from .profile import profile
+from .read import read
 
 app = Flask(__name__)
 
@@ -29,6 +33,20 @@ def get_id():
 def is_logged_in():
     return session.get('logged_in') == True
 
-import critiqapp.critiq
-import logins.py
-import dashboard.py
+# ============== Error Handling ============
+
+def errorhandler(view):
+    @wraps(view)
+    def wrap(*args, **kwargs):
+        try:
+            f(*args, **kwargs)
+        except Exception as err:
+            flash('Error occurred: '+str(err))
+            return redirect(url_for('login.index'))
+    return wrap
+
+# ============== Registrations =============
+app.register_blueprint(board, url_prefix='/dashboard')
+app.register_blueprint(login)
+app.register_blueprint(profile, url_prefix='/profile')
+app.register_blueprint(read)

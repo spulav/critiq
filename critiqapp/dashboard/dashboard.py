@@ -1,5 +1,3 @@
-from critiqapp import app
-
 from flask import (render_template, url_for, request,
                    redirect, flash, session, jsonify)
 import dbi

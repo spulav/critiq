@@ -55,46 +55,40 @@ def checkPassword(username, password):
     hashed2_str = hashed2.decode('utf-8')
     return hashed2_str == hashed
 
-@app.route('/')
+@login.route('/')
 def index():
     if is_logged_in():
-        return url_for('dashboard')
+        return url_for('')
     else:
         return render_template('login.html', page_title="Welcome to Critiq")
 
-@app.route('/join/', methods=["POST"])
+@login.route('/join/', methods=["POST"])
+@errorhandler
 def join():
-    try:
-        username = request.form['username']
-        passwd1 = request.form['password1']
-        passwd2 = request.form['password2']
+    username = request.form['username']
+    passwd1 = request.form['password1']
+    passwd2 = request.form['password2']
 
-        if not isValidPassword(passwd1, passwd2):
-            return redirect(url_for('index'))
+    if not isValidPassword(passwd1, passwd2):
+        return redirect(url_for('login.index'))
         
-        hashed = hash(passwd1)
-        uid = createUser(username, hashed)
-        log(username, uid)
-        return redirect(url_for('dashboard'))
-    except Exception as err:
-        flash('Form submission error '+str(err))
-        return redirect(url_for('index'))
+    hashed = hash(passwd1)
+    uid = createUser(username, hashed)
+    log(username, uid)
+    return redirect(url_for(''))
 
-@app.route('/login/', methods=["POST"])
+@login.route('/login/', methods=["POST"])
+@errorhandler
 def login():
-    try:
-        username = request.form['username']
-        password = request.form['password']
+    username = request.form['username']
+    password = request.form['password']
 
-        conn = lookup.getConn(CONN)
-        user = lookup.getUser(conn, username)
+    conn = lookup.getConn(CONN)
+    user = lookup.getUser(conn, username)
 
-        if checkPassword(username, password):
-            log(username, user['uid'])
-            return redirect(url_for('dashboard'))
-        else:
-            flash('Login incorrect. Try again or join')
-            return redirect(url_for('index'))
-    except Exception as err:
-        flash('Form submission error: '+str(err))
-        return redirect(url_for('index'))
+    if checkPassword(username, password):
+        log(username, user['uid'])
+        return redirect(url_for(''))
+    else:
+        flash('Login incorrect. Try again or join')
+        return redirect(url_for('login.index'))
