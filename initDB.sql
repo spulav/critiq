@@ -1,9 +1,10 @@
-drop table if exists bookmarks;
+drop table if exists listcredits;
+drop table if exists readinglists;
 drop table if exists history;
-drop table if exists ratings;
-drop table if exists prefs;
-drop table if exists reviewCredits;
 drop table if exists reviews;
+drop table if exists prefs;
+drop table if exists commentCredits;
+drop table if exists comments;
 drop table if exists taglink;
 drop table if exists tags;
 drop table if exists chapters;
@@ -16,7 +17,9 @@ create table users (
     passhash char(60),
     unique(username),
     index(username),
-    commentscore DECIMAL
+    commentscore DECIMAL,
+    bio varchar(3000),
+    email varchar(200)
 );
 
 create table works (
@@ -26,7 +29,6 @@ create table works (
     updated date,
     summary varchar(2000),
     stars float,
-    wip boolean,
     avgRating decimal(10),
     index(uid),
     foreign key (uid) references users(uid)
@@ -37,12 +39,11 @@ create table works (
 ENGINE = InnoDB;
 
 create table chapters (
-    cid int not null auto_increment,
-    cnum int,
+    cnum int not null,
     sid int not NULL,
     filename varchar(100),
 
-    PRIMARY KEY (cid),
+    PRIMARY KEY (sid,cnum),
     index(sid),
     foreign key (sid) references works(sid)
         on update cascade
@@ -73,23 +74,22 @@ create table taglink (
 
 ENGINE = InnoDB;
 
-create table reviews (
-    rid int not null auto_increment primary key,
+create table comments (
+    commid int not null auto_increment primary key,
     commenter int not null,
-    ishelpful int,
     reviewText varchar(2000),
     foreign key(commenter) references users(uid)
 )
 
 ENGINE = InnoDB;
 
-create table reviewCredits ( 
-    rid int not null,
+create table commentCredits ( 
+    commid int not null,
     cid int not null,
 
-    primary key(rid, cid),
+    primary key(commid, cid),
 
-    foreign key(rid) references reviews(rid)
+    foreign key(commid) references comments(commid)
         on update cascade
         on delete cascade,
     foreign key(cid) references chapters(cid)
@@ -114,9 +114,10 @@ create table prefs (
 )
 ENGINE = InnoDB;
 
-create table ratings (
+create table reviews (
     uid int not null,
     sid int not null,
+    filename varchar(200),
     rating int not null,
     primary key (uid, sid),
     
@@ -149,11 +150,23 @@ create table history (
 
 ENGINE = InnoDB;
 
-create table bookmarks (
+create table readinglists (
+    lid int auto_increment not null primary key,
     uid int not null,
-    sid int not null, 
-    primary key (uid, sid),
+    listname varchar(50) not null,
+
+    index(uid)
+
     foreign key(uid) references users(uid)
+        on update CASCADE
+        on delete cascade,
+)
+
+create table listcredits (
+    lid int not null,
+    sid int not null, 
+    primary key (lid, sid),
+    foreign key(lid) references readinglists(lid)
         on update CASCADE
         on delete cascade,
     foreign key(sid) references works(sid)

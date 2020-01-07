@@ -30,3 +30,5 @@ def is_logged_in():
     return session.get('logged_in') == True
 
 import critiqapp.critiq
+import logins.py
+import dashboard.py

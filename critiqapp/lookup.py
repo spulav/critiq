@@ -39,7 +39,7 @@ def getUID(conn, username):
 def getUser(conn, username):
     '''gets hashed password to check for login'''
     curs = dbi.dictCursor(conn)
-    curs.execute('''SELECT uid,passhash
+    curs.execute('''SELECT uid,username,passhash
                       FROM users
                       WHERE username = %s''',
                      [username])
