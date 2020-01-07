@@ -3,6 +3,7 @@ from critiqapp import app
 import dbi
 from threading import Lock
 import critiqapp.lookup as lookup
+import critiqapp.wrappers as wrappers
 import bcrypt
 
 from flask import (render_template, url_for, request,
@@ -39,7 +40,7 @@ def createUser(username, hash):
         uid = lookup.insertUser(conn, username, hashed_str)
     except Exception as err: # this is not getting thrown
         flash(repr(err))#: {}'.format(repr(err)))
-        return redirect(url_for('index'))
+        return redirect(url_for('login.index'))
     lock.release()
     return uid
 
@@ -63,7 +64,7 @@ def index():
         return render_template('login.html', page_title="Welcome to Critiq")
 
 @login.route('/join/', methods=["POST"])
-@errorhandler
+@wrappers.errorhandler
 def join():
     username = request.form['username']
     passwd1 = request.form['password1']
@@ -75,10 +76,10 @@ def join():
     hashed = hash(passwd1)
     uid = createUser(username, hashed)
     log(username, uid)
-    return redirect(url_for(''))
+    return redirect(url_for('board.dashboard'))
 
 @login.route('/login/', methods=["POST"])
-@errorhandler
+@wrappers.errorhandler
 def login():
     username = request.form['username']
     password = request.form['password']
@@ -88,7 +89,17 @@ def login():
 
     if checkPassword(username, password):
         log(username, user['uid'])
-        return redirect(url_for(''))
+        return redirect(url_for('board.dashboard'))
     else:
         flash('Login incorrect. Try again or join')
         return redirect(url_for('login.index'))
+
+@login.route('/logout/')
+@wrappers.errorhandler
+@wrappers.login_required
+def logout():
+    session.pop('username')
+    session.pop('uid')
+    session.pop('logged_in')
+    flash('You are logged out')
+    return redirect(url_for('login.index'))
