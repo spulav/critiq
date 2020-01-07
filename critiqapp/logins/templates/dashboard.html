@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="manage-stories-tab" data-toggle="tab" href="#manage" role="tab" aria-controls="manage stories" aria-selected="true">Manage Stories</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="reading-lists-tab" data-toggle="tab" href="#readinglists" role="tab" aria-controls="reading lists" aria-selected="false">Reading Lists</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="manage" role="tabpanel" aria-labelledby="manage-stories-tab">
+        {% block manage %}
+        {% endblock %}
+    </div>
+    <div class="tab-pane fade" id="readinglists" role="tabpanel" aria-labelledby="reading-lists-tab">
+        {% block readinglists %}
+        {% endblock %}
+    </div>
+    <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+        {% block settings %}
+        {% endblock %}
+    </div>
+  </div>
+
+{% endblock %}

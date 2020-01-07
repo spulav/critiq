@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>{{page_title}}</h1>
+<h4>Chapter {{cnum}}</h4>
+<h5>By <a href="{{url_for('profile', username=author)}}">{{author}}</a></h5>
+
+<form method="POST" action="{{url_for('addBookmark')}}">
+    <input value={{sid}} name="sid" type="hidden">
+    {% if isBookmark %}
+    <input type="submit" name="changemark" class="btn btn-info" value="Bookmarked">
+    {% else %}
+    <input type="submit" name="changemark" class="btn btn-secondary" value="Add Bookmark">
+    {% endif %}
+</form>
+
+<br>
+
+<form method="POST" action="{{url_for('chapIndex')}}" class="form-inline">
+    <input value={{sid}} name="sid" type=hidden>
+    <div class="inline"><label for="cid">Chapter Index</label></div>
+    <div class="inline"><select class="form-control" id="cid" name="cid">
+        {% for i in allch %}
+            <option value="{{i['cnum']}}">Chapter {{i['cnum']}}</option>
+        {% endfor %}
+    </select></div>
+    <div class="inline"><input type=submit value="Submit" class="btn btn-secondary"></div>
+</form>
+
+<br><br>
+{{ story|safe }}
+
+<br>
+<div id=nextprev>
+    {% if cnum > 1 %}
+    <a href="{{url_for('read', sid=sid, cnum=cnum-1)}}"><button class="btn btn-secondary">&#8592; Previous Chapter</button></a>
+    {% endif %}
+    
+    {% if cnum < maxCh %}
+    <a href="{{url_for('read', sid=sid, cnum=cnum+1)}}"><button class="btn btn-secondary">Next Chapter &#8594;</button></a>
+    {% endif %}
+</div>
+<!-- Need to include a Next Chapter Button -->
+
+<br><br>
+<div id=existingComments>
+    {% if allComments %}
+        <h5>Comments others have left for you:</h5>
+        <br>
+        {% for comment in allComments %}
+            <div class=comment>
+                <p><a href="{{url_for('profile', username=comment.commenter)}}">{{ comment.commenter}}</a></p>
+                <p>{{ comment.reviewText }}</p>
+                <form class="helpfulForm" method="POST" id=rid{{comment.rid}}> <!-- action="{{url_for('markHelpful')}}"> -->
+                    <input class="helpfulRid" value={{comment.rid}} name="rid" type=hidden>
+                    {% if comment.ishelpful == False %}
+                    <label id="helpful" class="helpful"><div class=labelInput><div id="helpfulbtn" class="like">&#128077;</div></div>
+                        <input class="helpfulInput" type="radio" value=1 name="helpful"> </label>
+                    <label id="nothelpful" class="helpful"><div class=labelInput><div id="nothelpfulbtn" class="likeselected">&#128078;</div></div> 
+                        <input class="helpfulInput" type="radio" value=0 name="helpful"> </label>
+                    {% elif comment.ishelpful == True %}
+                    <label id="helpful" class="helpful"><div class=labelInput><div id="helpfulbtn" class="likeselected">&#128077;</div></div>
+                        <input class="helpfulInput" type="radio" value=1 name="helpful"> </label>
+                    <label id="nothelpful" class="helpful"><div class=labelInput><div id="nothelpfulbtn" class="like">&#128078;</div></div> 
+                        <input class="helpfulInput" type="radio" value=0 name="helpful"> </label>
+                    {% else %}
+                    <label id="helpful" class="helpful"><div class=labelInput><div id="helpfulbtn" class="like">&#128077;</div></div>
+                        <input class="helpfulInput" type="radio" value=1 name="helpful"> </label>
+                    <label id="nothelpful" class="helpful"><div class=labelInput><div id="nothelpfulbtn" class="like">&#128078;</div></div> 
+                        <input class="helpfulInput" type="radio" value=0 name="helpful"> </label>
+                    {% endif %}
+                </form>
+            </div>
+            <br>
+        {% endfor %}
+    {% else %}
+        {% if comments %}
+        <h5>Comments you've left on this chapter:</h5>
+        <br>
+        {% else %}
+        <h5>You haven't left any comments on this chapter yet.</h5>
+        {% endif %}
+        {% for comment in comments %}
+            <div class=comment>
+                <p>{{ comment.reviewText }}</p>
+            </div>
+            <br>
+        {% endfor %}
+    {% endif %}
+</div>
+
+
+<!-- want to reflect previous ratings on page load, probably a beta feature -->
+{% if chapter.wip %}
+    <form id="rateForm" method = "POST" action="{{url_for('rateAjax')}}">  
+            <input class="rateSid" value={{sid}} name="sid" type=hidden>
+            <input class="rateUid" value={{uid}} name="sid" type=hidden>
+
+        {% if not old_rating %}
+            <label id="rate1" class="rating"><div class=labelInput> &#9734;</div>
+                <input class="ratingInput" type="radio" value=1 name="rating"> </label>
+            <label id="rate2" class="rating"><div class=labelInput> &#9734;</div> 
+                <input class="ratingInput" type="radio" value=2 name="rating"> </label>
+            <label id="rate3" class="rating"><div class=labelInput> &#9734;</div>
+                <input class="ratingInput" type="radio" value=3 name="rating"> </label>
+            <label id="rate4" class="rating"><div class=labelInput> &#9734;</div>
+                <input class="ratingInput" type="radio" value=4 name="rating">  </label>
+            <label id="rate5" class="rating"><div class=labelInput> &#9734;</div>
+                <input class="ratingInput" type="radio" value=5 name="rating"> </label>
+            <!-- <input class="rate-button" type="submit" value="rate this"></input> -->
+        {% else %}
+            {% for i in range(1,old_rating+1) %}
+            <label id="rate{{i}}" class="rating"><div class=labelInput> &#9733;</div>
+                <input class="ratingInput" type="radio" value={{i}} name="rating"> </label>
+            {% endfor %}
+            {% for i in range(old_rating+1, 6) %}
+            <label id="rate{{i}}" class="rating"><div class=labelInput> &#9734;</div>
+                <input class="ratingInput" type="radio" value={{i}} name="rating"> </label>
+
+            {% endfor %}
+
+            <p id="avgCol1">Average rating: {{avgRating}}/5</p>
+        {% endif %}
+
+        <p id="avgCol"></p>
+        </form>
+    
+{% endif %}
+
+    <form id="commentForm" action="{{url_for('addComment')}}" method="POST">
+        <label>Add a comment on this chapter
+            <textarea name="commentText" rows="8" class="form-control"></textarea></label>
+            <br>
+            <input value={{chapter.cid}} id="chapcid" name="chapcid" type=hidden>
+            <input id="commentSubmit" type="submit" class="btn btn-info" value="Comment">
+    </form>
+
+    <p id="commentConfirmation">Comment submitted!</p>
+
+
+<script>
+    $("#commentConfirmation").hide()
+    $("#avgCol").hide()
+    
+    $("input[type=radio].ratingInput").hide()
+    $("input:radio.helpfulInput").hide()
+    var progressive_on = true;
+    var RATEURL = "{{url_for('rateAjax')}}"   
+    var HELPFULURL = "{{url_for('markHelpful')}}" 
+
+    // $("input:radio.ratingInput").click(function() { 
+        $("#rateForm").on("click", "input:radio.ratingInput", function(event) {
+        console.log('adding rating with Ajax')
+        $("#avgCol1").hide()
+        //turn on ajax
+        if (progressive_on) {
+            rate = $(this).val();
+            console.log(rate);
+            for (i = 1; i <= rate; i++) {
+                // console.log(i)
+                $("#rateForm").find("#rate" + i).find(".labelInput").html(' &#9733;');
+            };
+            for (i = 5; i > rate; i--) {
+                // console.log(i)
+                $("#rateForm").find("#rate" + i).find(".labelInput").html(' &#9734;');
+            };
+            $("input:radio.ratingInput").hide()
+            //update avg rating
+            var sid = $(this).closest("form").find(".rateSid").val()
+            var uid = $(this).closest("form").find(".rateUid").val()
+            $.post(RATEURL, {'rating': rate,
+                        'sid': sid,
+                        'uid': uid}, showAvgRating)
+            
+        }
+    });
+
+    $(".helpfulForm").on("click", "input:radio.helpfulInput", function(event) {
+        console.log('mark helpful with Ajax')
+        //turn on ajax
+        if (progressive_on) {
+            helpful = $(this).val();
+            console.log(helpful);
+            // $("input:radio.helpfulInput").hide()
+
+            var rid = $(this).closest("form").find(".helpfulRid").val()
+            console.log(rid)
+            var styles = {"background-color": "#888888",
+                        "border-color": "#888888"}
+            $(this).closest("form").find("#helpfulbtn").css(styles)
+            $(this).closest("form").find("#nothelpfulbtn").css(styles)
+
+            $.post(HELPFULURL, {'helpful': helpful, 'rid': rid}, showHelpful)
+            
+        }
+    });
+
+    function showAvgRating(obj) {
+        console.log(obj)
+        $('#avgCol').text('Average rating: ' + obj.avgRating + '/5')
+        $('#avgCol').show()
+    }
+
+    function showHelpful(obj) {
+        console.log(obj)
+        var styles = {"background-color": "green",
+                        "border-color": "green"}
+        if (obj.helpful == 0){
+            $("#rid" + obj.rid).find("#nothelpfulbtn").css(styles)
+        } else if (obj.helpful == 1) {
+            $("#rid" + obj.rid).find("#helpfulbtn").css(styles)
+        }
+    }
+
+</script>
+
+<noscript>
+    <p>Your browser doesn't support JavaScript.</p>
+</noscript>
+
+{% endblock %}
