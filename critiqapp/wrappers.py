@@ -9,7 +9,7 @@ def login_required(f):
         if session.get('logged_in') == True:
             return f(*args, **kwargs)
         else:
-            flash("You need to login first")
+            flash("Please log in", "warning")
             return redirect(url_for('index'))
     return wrap
 
@@ -27,6 +27,6 @@ def errorhandler(f):
         try:
             f(*args, **kwargs)
         except Exception as err:
-            flash('Error occurred: '+str(err))
+            flash('Error occurred: '+str(err), "danger")
             return redirect(url_for('login.index'))
     return wrap

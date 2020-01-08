@@ -14,10 +14,10 @@ lock = Lock()
 
 def isValidPassword(passwd1, passwd2):
     if passwd1 != passwd2:
-        flash('Passwords do not match')
+        flash('Passwords do not match', 'warning')
         return False
     if len(passwd1) < 12:
-        flash('Passwords must be at least 12 characters long')
+        flash('Passwords must be at least 12 characters long', 'warning')
         return False
     return True
 
@@ -31,16 +31,12 @@ def log(username, uid):
     session['uid'] = uid
     session['logged_in'] = True
     session.permanent = True
-    flash('Successfully logged in as '+username)
+    flash('Successfully logged in as '+username, 'success')
 
 def createUser(username, hash):
     conn = lookup.getConn(CONN)
     lock.acquire()
-    try:
-        uid = lookup.insertUser(conn, username, hashed_str)
-    except Exception as err: # this is not getting thrown
-        flash(repr(err))#: {}'.format(repr(err)))
-        return redirect(url_for('login.index'))
+    uid = lookup.insertUser(conn, username, hashed_str)
     lock.release()
     return uid
 
@@ -91,7 +87,7 @@ def logger():
         log(username, user['uid'])
         return redirect(url_for('board.dashboard'))
     else:
-        flash('Login incorrect. Try again or join')
+        flash('Login incorrect. Try again or join', 'warning')
         return redirect(url_for('login.index'))
 
 @login.route('/logout/')
@@ -101,5 +97,5 @@ def logout():
     session.pop('username')
     session.pop('uid')
     session.pop('logged_in')
-    flash('You are logged out')
+    flash('You are logged out', 'info')
     return redirect(url_for('login.index'))

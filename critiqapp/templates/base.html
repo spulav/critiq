@@ -14,11 +14,11 @@
     
 </head>
 <body>
-{% with messages = get_flashed_messages() %}
+{% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         <div id="messages">
-        {% for msg in messages %}
-            <div class="alert alert-primary" role="alert">
+        {% for category,msg in messages %}
+            <div class="alert alert-{{category}}" role="alert">
                 {{msg}}
             </div>
         {% endfor %}
