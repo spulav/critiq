@@ -1,7 +1,10 @@
+from functools import wraps
+from flask import session, flash
+
 # ============== User Management =============
 
-def login_required(view):
-    @wraps(view)
+def login_required(f):
+    @wraps(f)
     def wrap(*args, **kwargs):
         if session.get('logged_in') == True:
             return f(*args, **kwargs)
@@ -18,8 +21,8 @@ def is_logged_in():
 
 # ============== Error Handling ============
 
-def errorhandler(view):
-    @wraps(view)
+def errorhandler(f):
+    @wraps(f)
     def wrap(*args, **kwargs):
         try:
             f(*args, **kwargs)

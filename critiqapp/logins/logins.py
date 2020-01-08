@@ -1,5 +1,4 @@
-from critiqapp import app
-
+from . import login
 import dbi
 from threading import Lock
 import critiqapp.lookup as lookup
@@ -7,7 +6,8 @@ import critiqapp.wrappers as wrappers
 import bcrypt
 
 from flask import (render_template, url_for, request,
-                   redirect, flash, session)
+                   redirect, flash, session
+                   )
 
 CONN = 'spulavar_db'
 lock = Lock()
@@ -58,8 +58,8 @@ def checkPassword(username, password):
 
 @login.route('/')
 def index():
-    if is_logged_in():
-        return url_for('')
+    if wrappers.is_logged_in():
+        return url_for('board.dashboard')
     else:
         return render_template('login.html', page_title="Welcome to Critiq")
 
@@ -80,7 +80,7 @@ def join():
 
 @login.route('/login/', methods=["POST"])
 @wrappers.errorhandler
-def login():
+def logger():
     username = request.form['username']
     password = request.form['password']
 

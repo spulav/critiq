@@ -1,3 +1,4 @@
+from . import board
 from flask import (render_template, url_for, request,
                    redirect, flash, session, jsonify)
 import dbi
@@ -20,7 +21,7 @@ def dashboard():
     stories = lookup.getStories(conn, uid)
     return render_template('manage.html', stories=stories, page_title="My Dashboard")
 
-@app.route('/add/', methods=["GET", "POST"])
+@board.route('/add/', methods=["GET", "POST"])
 def add():
     try:
         if request.method == "GET":
@@ -59,8 +60,8 @@ def add():
         flash('Error: '+str(err))
         return redirect( url_for('index') )
 
-@app.route('/update/<int:sid>/', defaults={'cnum':1}, methods=["GET","POST"])
-@app.route('/update/<int:sid>/<int:cnum>/', methods=["GET","POST"])
+@board.route('/update/<int:sid>/', defaults={'cnum':1}, methods=["GET","POST"])
+@board.route('/update/<int:sid>/<int:cnum>/', methods=["GET","POST"])
 def update(sid, cnum):
     try:
         conn = lookup.getConn(CONN)
