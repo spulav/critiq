@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+                <form id="joinform" action="{{url_for('login.join')}}" method="post">
+                    <h2>Sign Up</h2>
+                    <p><label>Username: <input class="form-control" type="text" name="username" required pattern="^\w+$"></label></p>
+                    <p><label>Password: <input class="form-control" type="password" name="password1" required></label></p>
+                    <p><label>Confirm Password: <input class="form-control" type="password" name="password2" required></label></p>
+                    <p><button class="btn btn-info" type="submit">Submit</button></p>
+                </form>
+
+                 <form id="loginform" action="{{url_for('login.logger')}}" method="post">
+                    <h2>Log In</h2>
+                    <p><label>Username: <input class="form-control" type="text" name="username" required pattern="^\w+$"></label></p>
+                    <p><label>Password: <input class="form-control" type="password" name="password" required></label></p>
+                    <p><button class="btn btn-info" type="submit">Submit</button></p>
+                </form>
+{% endblock %}

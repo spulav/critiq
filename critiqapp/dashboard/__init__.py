@@ -2,8 +2,7 @@ from flask import Blueprint
 
 board = Blueprint(
     'dashboard',
-    __name__,
-    template_folder='templates'
+    __name__
 )
 
 from . import dashboard
