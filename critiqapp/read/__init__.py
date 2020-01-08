@@ -3,8 +3,7 @@ from flask import Blueprint
 read = Blueprint(
     'read',
     __name__,
-    template_folder='templates',
-    static_folder='static'
+    template_folder='templates'
 )
 
 from . import read
