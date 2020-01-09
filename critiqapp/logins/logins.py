@@ -57,7 +57,7 @@ def index():
     if wrappers.is_logged_in():
         return url_for('board.dashboard')
     else:
-        return render_template('login.html', page_title="Welcome to Critiq")
+        return render_template('logins/login.html', page_title="Welcome to Critiq")
 
 @login.route('/join/', methods=["POST"])
 @wrappers.errorhandler

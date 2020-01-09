@@ -62,7 +62,7 @@ def read(sid, cnum):
         isUpdate = True
     else:
         isUpdate = False
-    return render_template('read.html', 
+    return render_template('read/read.html', 
                             page_title=work['title'], 
                             story=story,
                             chapter=chapter,
@@ -163,6 +163,6 @@ def worksByTerm(search_kind, search_term):
     if not res:
         flash("No {} Found Including {}: {} :( ".format(resKind, nm, term), 'info')
         
-    return render_template('search.html', resKind=resKind, term=term, 
+    return render_template('read/search.html', resKind=resKind, term=term, 
                             res=res, warnings=lookup.getTags(conn, 'warnings'),
                             page_title="Search")

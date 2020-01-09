@@ -19,7 +19,7 @@ def dashboard():
     uid = session['uid']
     conn = lookup.getConn(CONN)
     stories = lookup.getStories(conn, uid)
-    return render_template('manage.html', stories=stories, page_title="My Dashboard")
+    return render_template('dashboard/manage.html', stories=stories, page_title="My Dashboard")
 
 @board.route('/add/', methods=["GET", "POST"])
 @wrappers.login_required
@@ -32,7 +32,7 @@ def add():
         warnings = lookup.getTags(conn, 'warnings')
         audience = lookup.getTags(conn, 'audience')
         isFin = lookup.getTags(conn, 'isFin')
-        return render_template('add.html', warnings=warnings, 
+        return render_template('dashboard/add.html', warnings=warnings, 
                             genre=genre, audience=audience, isFin=isFin, page_title="Add a Story")
                 
     if request.method == "POST":
@@ -74,7 +74,7 @@ def update(sid, cnum):
                     # print("Read for Update" + story)
             allch = lookup.getChapters(conn, sid)
             title = lookup.getTitle(conn, sid)
-            return render_template('write.html', sid=sid, cnum=cnum, story=story, 
+            return render_template('dashboard/write.html', sid=sid, cnum=cnum, story=story, 
                                 allch=allch, title=title['title'], page_title="Update '{}'".format(title['title']))
 
         if request.method=="POST":
