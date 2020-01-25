@@ -16,14 +16,14 @@ def getConn(db):
 
 # ------------------------ Passwords and UIDs
 
-def insertUser(conn, username, hashed_str):
+def insertUser(conn, username, email, hashed_str):
     '''inserts user into database when they make an account'''
     curs = dbi.cursor(conn)
     curs.execute('start transaction')
     curs.execute('lock tables users write')
-    curs.execute('''INSERT INTO users(uid,username,passhash)
-                            VALUES(null,%s,%s)''',
-                         [username, hashed_str])
+    curs.execute('''INSERT INTO users(uid,username,email,passhash)
+                            VALUES(null,%s,%s,%s)''',
+                         [username, email, hashed_str])
     curs.execute('select LAST_INSERT_ID()')
     row = curs.fetchone()
     uid = row[0]
@@ -44,6 +44,42 @@ def getUser(conn, username):
                       WHERE username = %s''',
                      [username])
     return curs.fetchone()
+
+def getUserFromEmail(conn, email):
+    '''gets user from email'''
+    curs = dbi.dictCursor(conn)
+    curs.execute('''SELECT uid, username, reset_time, reset_token
+                    FROM users
+                    WHERE email=%s''',
+                    [email])
+    return curs.fetchone()
+
+def checkEmail(conn, email):
+    '''checks if email is valid'''
+    curs = dbi.dictCursor(conn)
+    curs.execute('''SELECT count(*)
+                    FROM users
+                    WHERE email = %s''',
+                    [email])
+    return curs.fetchone()[0]
+
+def updateToken(conn, reset_time_str, email, token):
+    curs = dbi.dictCursor(conn)
+    curs.execute('lock tables users write')
+    curs.execute('''UPDATE users
+                    SET reset_time = %s, reset_token = %s
+                    WHERE email=%s''',
+                    [reset_time_str, token, email])
+    curs.execute('unlock tables')
+
+def changePassword(conn, uid, hashed):
+    curs = dbi.dictCursor(conn)
+    curs.execute('lock tables users write')
+    curs.execute('''UPDATE userpass
+                    SET passhash = %s
+                    WHERE uid=%s''',
+                    [hashed, uid])
+    curs.execute('unlock tables')
 
 # ------------------ Profiles and Preferences
 
