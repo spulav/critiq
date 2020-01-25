@@ -15,12 +15,26 @@ create table users (
     uid int not null auto_increment primary key,
     username varchar(30), 
     passhash char(60),
+    reset_time DATETIME,
+    email varchar(200),
     unique(username),
-    index(username),
+    unique(email),
+    index(username)
+)
+
+ENGINE = InnoDB;;
+
+create table profile (
+    uid int not null,
     commentscore DECIMAL,
     bio varchar(3000),
-    email varchar(200)
-);
+    index(uid),
+    foreign key (uid) references users(uid)
+        on UPDATE cascade
+        on delete cascade
+)
+
+ENGINE = InnoDB;
 
 create table works (
     sid int not null auto_increment primary key,
