@@ -1,0 +1,5 @@
+<form id="forgotform" action="{{url_for('login.forgot')}}" method="POST">
+    <h2>Forgot Password</h2>
+    <input class="form-control" aria-label="Email" type="text" placeholder="Email" name="email" required pattern="^\w+$">
+    <button class="btn btn-info" type="submit">Submit</button>
+</form>

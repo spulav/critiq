@@ -2,18 +2,54 @@
 
 {% block content %}
 
-                <form id="joinform" action="{{url_for('login.join')}}" method="post">
-                    <h2>Sign Up</h2>
-                    <p><label>Username: <input class="form-control" type="text" name="username" required pattern="^\w+$"></label></p>
-                    <p><label>Password: <input class="form-control" type="password" name="password1" required></label></p>
-                    <p><label>Confirm Password: <input class="form-control" type="password" name="password2" required></label></p>
-                    <p><button class="btn btn-info" type="submit">Submit</button></p>
+<div class="card">
+    <div class="card-header">
+      <ul class="nav nav-pills card-header-pills">
+        <li class="nav-item">
+            <a class="nav-link active" id="pills-join-tab" data-toggle="pill" href="#pills-join" role="tab" aria-controls="pills-join" aria-selected="true">Sign Up</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="pills-login-tab" data-toggle="pill" href="#pills-login" role="tab" aria-controls="pills-login" aria-selected="false">Log In</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="pills-forgot-tab" data-toggle="pill" href="#pills-forgot" role="tab" aria-controls="pills-forgot" aria-selected="false">Forgot Password</a>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="card-body">
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-join" role="tabpanel" aria-labelledby="pills-join-tab">
+                <form id="joinform" action="{{url_for('login.join')}}" method="POST">
+                    <h2 class="card-title">Sign Up</h2 cla>
+                    <input class="form-control" aria-label="Username to Join" type="text" placeholder="Username" name="username" required pattern="^\w+$">
+                    <input class="form-control" aria-label="Password to Join" placeholder="Password" type="password" name="password1" required aria-describedby="passwordHelpBlock">
+                    <small id="passwordHelpBlock" class="form-text text-muted">
+                        Your password must be at least 12 characters long.
+                    </small>
+                    <input class="form-control" aria-label="Confirm Password to Join" placeholder="Confirm Password" type="password" name="password2" required>
+                    <button class="btn btn-info" type="submit">Submit</button>
                 </form>
+            </div>
 
-                 <form id="loginform" action="{{url_for('login.logger')}}" method="post">
-                    <h2>Log In</h2>
-                    <p><label>Username: <input class="form-control" type="text" name="username" required pattern="^\w+$"></label></p>
-                    <p><label>Password: <input class="form-control" type="password" name="password" required></label></p>
-                    <p><button class="btn btn-info" type="submit">Submit</button></p>
+            <div class="tab-pane fade" id="pills-login" role="tabpanel" aria-labelledby="pills-login-tab">
+                <form id="loginform" action="{{url_for('login.logger')}}" method="POST">
+                    <h2 class="card-title">Log In</h2>
+                    <input class="form-control" aria-label="Username to Log In" type="text" placeholder="Username" name="username" required pattern="^\w+$">
+                    <input class="form-control" aria-label="Password to Join" placeholder="Password" type="password" name="password" required>
+                    <button class="btn btn-info" type="submit">Submit</button>
                 </form>
+            </div>
+
+            <div class="tab-pane fade" id="pills-forgot" role="tabpanel" aria-labelledby="pills-forgot-tab">
+                <form id="forgotform" action="{{url_for('login.forgot')}}" method="POST">
+                    <h2 class="card-title">Forgot Password</h2>
+                    <input class="form-control" aria-label="Email" type="text" placeholder="Email" name="email" required pattern="^\w+$">
+                    <button class="btn btn-info" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+  </div>
+
 {% endblock %}

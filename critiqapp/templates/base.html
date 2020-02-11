@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="{{url_for('static', filename = 'style.css')}}">
     <link rel="icon" href="{{url_for('static', filename = 'images/critiq_icon.png')}}">
     <title>{{page_title}}</title>
-    
 </head>
+
 <body>
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -32,79 +32,52 @@
 {% block navigation %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     
-    <a class="navbar-brand" href="{{url_for('login.index')}}">
+    <a class="navbar-brand" href="{{url_for('login.index')}}" aria-label="Home">
         <img src="{{url_for('static', filename = 'images/critiq_logo_half.png')}}" height="50" alt="critiq logo">
     </a>
 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" >
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavigation" aria-controls="mainNavigation" aria-expanded="false" aria-label="Toggle navigation" >
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent"> 
+    <div class="collapse navbar-collapse" id="mainNavigation"> 
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="{{url_for('login.index')}}">
-        </li>
+
+        {% if 'uid' in session %}
+
         <li class="nav-item nonactive">
           <form id="search-form" method="POST" action="{{url_for('login.index')}}" class="form-inline my-2 my-lg-0">
-            <div class="inline">
-                <label id="searchlabel">
-                    Search For: 
-                        <div class="inline">
-                            <input id="term" name="search_term" value="" class="form-control">
-                        </div>
-                </label>
-            </div>
-            <div class="inline">
-                <label id="selTag">
-                    Select Desired Tag: 
-                        <div class="inline">
-                            <select id="select_tag" name="select_tag" class="form-control">
-                                <option value="">Select a Tag</option>
-                            </select></div>
-                </label>
-            </div>
-            <fieldset name="srch" style="display: inline;">
-            <div class="inline"><label>
-                <div class="inline"><input required type="radio" name="search_kind" value="work">
-                Title</div>
-            </label></div>
-          </fieldset>
-          <fieldset name="srch" style="display: inline;">
-            <div class="inline"><label>
-                <div class="inline"><input required type="radio" name="search_kind" value="author">
-                Author </div>
-            </label></div>
-          </fieldset>
-          <fieldset name="srch" style="display: inline;">
-            <div id="formtag" class="inline"><label>
-                <div class="inline"><input required type="radio" name="search_kind" value="tag">
-              Tag </div>
-            </label></div>
-          </fieldset>
-           
-            <div class="inline"><input type="submit" name="submit-btn" value=" Search" class="btn btn-secondary"></div>
+            <input type="search" id="term" name="search_term" value="" class="form-control" aria-label="Search">
+            <input type="submit" name="submit-btn" value=" Search" class="btn btn-secondary">
           </form>
         </li>
-        {% if 'uid' in session %}
-          <li class="nav-item dropdown nonactive">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Profile</a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+        <li class="nav-item dropdown nonactive">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Profile</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 
-                <a class="dropdown-item" href="{{url_for('profile', username=session['username'])}}">My Profile</a>
-                <a class="dropdown-item" href="{{url_for('history')}}">My History</a>
-                <a class="dropdown-item" href="{{url_for('manage')}}">Manage My Stories</a>
-                <a class="dropdown-item" href="{{url_for('bookmarks')}}">My Bookmarks</a>
-                <a class="dropdown-item" href="{{url_for('recommendations')}}">My Recommendations</a>
-                <a class="dropdown-item" href="{{url_for('logout')}}">Log out</a>
+              <a class="dropdown-item" href="{{url_for('profile', username=session['username'])}}">My Profile</a>
+              <a class="dropdown-item" href="{{url_for('history')}}">My History</a>
+              <a class="dropdown-item" href="{{url_for('manage')}}">Manage My Stories</a>
+              <a class="dropdown-item" href="{{url_for('bookmarks')}}">My Bookmarks</a>
+              <a class="dropdown-item" href="{{url_for('recommendations')}}">My Recommendations</a>
+              <a class="dropdown-item" href="{{url_for('logout')}}">Log out</a>
                 
-              </div>
-            </li>
+            </div>
+        </li>
+
+        {% else %}
+
+        <li class="nav-item nonactive">
+          <a href="url_for('login.index')" class="nav-link">Log In or Sign Up</a>
+        </li>
+
         {% endif %}
+
       </ul>
     </div>
 
-  </nav>
+</nav>
 {% endblock %}
 
 <div class="row">
@@ -115,7 +88,6 @@
     </div>
     <div class="col-xl-2 col-lg-2 col-md-1 col-sm-1 col-xs-1"></div>
 </div>
-  
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
