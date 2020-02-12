@@ -1,4 +1,4 @@
-from critiqapp import app
+import critiqapp
 import sys, os
 
 if __name__ == '__main__':
@@ -9,5 +9,7 @@ if __name__ == '__main__':
         assert(port>1024)
     else:
         port = os.getuid()
+    
+    app = critiqapp.create_app()
     app.debug = True
     app.run('0.0.0.0',port)
