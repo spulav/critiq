@@ -1,0 +1,15 @@
+name: flaskenv
+channels:
+ - defaults
+ - anaconda
+ - conda-forge
+dependencies:
+ - flask
+ - flask-sqlalchemy
+ - flask-wtf
+ - flask-mail
+ - flask-migrate
+ - flask-login
+ - passlib[bcrypt]
+ - bleach
+ - python-dotenv

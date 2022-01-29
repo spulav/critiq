@@ -1,0 +1,34 @@
+<!doctype html5>
+<html lang='en'>
+{% block header %}
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Svetha Pulavarty">
+    <title>{{page_title}}</title>
+</head>
+{% endblock %}
+
+<body>
+    <nav>
+
+    </nav>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div id="messages">
+        {% for msg in messages %}
+            <p>{{msg}}</p>
+        {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+{% block content %}
+    <h1>Welcome!</h1>
+{% endblock %}
+
+<footer>
+
+</footer>
+
+</body>
