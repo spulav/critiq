@@ -1,5 +1,5 @@
 from app import login_manager
-from services import loginmanager
+from app.services import loginmanager
 
 @login_manager.user_loader
 def load_user(user_id):

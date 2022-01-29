@@ -1,6 +1,6 @@
 from flask import Blueprint
 from flask_login import login_required
-from services import auth
+from app.services import auth
 
 auth_bp = Blueprint(
     "auth", __name__

@@ -15,7 +15,7 @@ def create_app():
     flask_env = os.getenv("FLASK_ENV", None)
 
     if flask_env == "development":
-        app.config.from_object("config.DevConfig")
+        app.config.from_object("config.DevelopConfig")
     elif flask_env == "testing":
         app.config.from_object("config.TestingConfig")
     else:
@@ -34,7 +34,7 @@ def create_app():
         db.create_all()
 
         # blueprints
-        import routes
+        from . import routes
         
         app.register_blueprint(routes.auth_bp)
         app.register_blueprint(routes.board_bp)

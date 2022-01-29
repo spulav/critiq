@@ -3,7 +3,7 @@ from flask import (redirect, render_template,
 from flask_login import logout_user, current_user, login_user
 
 from app.repository.user import user_from_email, create_user
-from forms.auth import LoginForm, SignUpForm
+from app.forms.auth import LoginForm, SignUpForm
 
 def login():
     if current_user.is_authenticated:
