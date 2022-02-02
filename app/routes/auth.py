@@ -3,18 +3,22 @@ from flask_login import login_required
 from app.services import auth
 
 auth_bp = Blueprint(
-    "auth", __name__
+    "auth_bp", __name__
 )
+
+@auth_bp.route('/', methods=['GET'])
+def home():
+    return "Hello World"
 
 @auth_bp.route('/login/', methods=['GET', 'POST'])
 def login():
-    auth.login()
+    return auth.login()
 
 @auth_bp.route('/signup/', methods=['GET','POST'])
 def signup():
-    auth.signup()
+    return auth.signup()
 
 @auth_bp.route('/logout/')
 @login_required
 def logout():
-    auth.logout()
+    return auth.logout()

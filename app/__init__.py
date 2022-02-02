@@ -1,12 +1,16 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_mail import Mail
+from flask_bootstrap import Bootstrap5
 from flask_migrate import Migrate
 import os
 
 db = SQLAlchemy()
 migrate = Migrate()
+mail = Mail()
 login_manager = LoginManager()
+bootstrap = Bootstrap5()
 
 def create_app():
     app = Flask(__name__)
@@ -20,11 +24,13 @@ def create_app():
         app.config.from_object("config.TestingConfig")
     else:
         app.config.from_object("config.ProductionConfig")
-
+    
     # initialize plug-ins
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+    bootstrap.init_app(app)
+    mail.init_app(app)
 
     from . import dbmodels
 
@@ -37,6 +43,5 @@ def create_app():
         from . import routes
         
         app.register_blueprint(routes.auth_bp)
-        app.register_blueprint(routes.board_bp)
 
         return app

@@ -1,27 +1,28 @@
-<!doctype html5>
+{% from 'bootstrap5/utils.html' import render_messages %}
+{% from 'bootstrap5/nav.html' import render_nav_item %}
+<!doctype html>
 <html lang='en'>
-{% block header %}
+
 <head>
+{% block header %}
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="Svetha Pulavarty">
+    
+    {% block styles %}
+        {{ bootstrap.load_css() }}
+    {% endblock styles %}
+
     <title>{{page_title}}</title>
+{% endblock header %}
 </head>
-{% endblock %}
 
 <body>
-    <nav>
-
+    <nav class='nav nav-pills'> 
+        {{ render_nav_item('auth_bp.home', 'Home') }}
     </nav>
 
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <div id="messages">
-        {% for msg in messages %}
-            <p>{{msg}}</p>
-        {% endfor %}
-        </div>
-    {% endif %}
-{% endwith %}
+{{ render_messages() }}
 
 {% block content %}
     <h1>Welcome!</h1>
@@ -30,5 +31,7 @@
 <footer>
 
 </footer>
-
+{% block scripts %}
+    {{ bootstrap.load_js() }}
+{% endblock scripts %}
 </body>
