@@ -1,15 +1,19 @@
 from flask import (redirect, render_template, 
-                    flash, request, url_for)
+                    flash, url_for)
 from flask_login import logout_user, current_user, login_user
-
+from app import mail
+from flask_mail import Message
+import os
+from dotenv import load_dotenv
 from app.dbmodels import User
-from app.forms.auth.forms import login, signup
-from app.emails.auth.forgot import forgot_password_email
+from app.forms.auth import *
+
+load_dotenv()
 
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('auth_bp.home'))
-    form = login.LoginForm()
+        return redirect(url_for('base_bp.home'))
+    form = LoginForm()
     if form.validate_on_submit():
         user = User.user_from_email(form.email.data)
         if user and user.check_password(password=form.password.data):
@@ -17,10 +21,10 @@ def login():
             return redirect(url_for('auth_bp.home'))
         flash('Invalid username/password combination')
         return redirect(url_for('auth_bp.login'))
-    return render_template('auth/login.html', form=form)
+    return render_template('auth/form.html', form=form)
 
 def signup():
-    form = signup.SignUpForm()
+    form = SignUpForm()
     if form.validate_on_submit():
         existing_user = User.user_from_email(form.email.data)
         if existing_user is None:
@@ -28,20 +32,43 @@ def signup():
             login_user(user)
             return "Success"
         flash('A user already exists with that email address.')
-    return render_template('auth/signup.html',form=form)
+    return render_template('auth/form.html',form=form)
 
 def logout():
-    """User log-out logic."""
     logout_user()
     flash('You have successfully logged out.')
     return redirect(url_for('auth_bp.login'))
 
 def forgot():
-    form = forms.forgot.ForgotPasswordForm()
+    form = ForgotPasswordForm()
     if form.validate_on_submit():
         user = User.user_from_email(form.email.data)
         if user:
-            forgot_password_email(user)
+            token = user.get_token()
+            url = url_for('newpass', token=token, _external=True)
+            msg = Message()
+            msg.subject = "Critiq Password Reset"
+            msg.sender = os.environ.get('MAIL_USERNAME')
+            msg.recipients = [user.email]
+            msg.html = render_template('auth/reset_email.html',
+                                url=url)
+            mail.send(msg)
+            flash("Password Reset. Please check your email for instructions.")
+            return(redirect(url_for('base_bp.home')))
         else:
             flash("There are no users with this email. Sign up or try again.")
             return redirect(url_for('auth_bp.signup'))
+    return render_template('auth/form.html',form=form)
+
+def newpass(token):
+    try: 
+        user = User.get_user_from_token(token)
+    except:
+        flash("URL not valid.")
+        return redirect(url_for('base_bp.home'))
+
+    form = NewPassword()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        return redirect(url_for('auth_bp.login'))
+    return render_template('auth/form.html', form=form)

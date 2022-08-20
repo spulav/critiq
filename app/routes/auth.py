@@ -6,10 +6,6 @@ auth_bp = Blueprint(
     "auth_bp", __name__
 )
 
-@auth_bp.route('/', methods=['GET'])
-def home():
-    return "Hello World"
-
 @auth_bp.route('/login/', methods=['GET', 'POST'])
 def login():
     return auth.login()
@@ -22,3 +18,11 @@ def signup():
 @login_required
 def logout():
     return auth.logout()
+
+@auth_bp.route('/forgot_password/', methods=['GET', 'POST'])
+def forgot():
+    return auth.forgot()
+
+@auth_bp.route('/reset_password/<token>', methods=['GET','POST'])
+def newpass(token):
+    return auth.newpass(token)

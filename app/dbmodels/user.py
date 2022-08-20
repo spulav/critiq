@@ -1,9 +1,9 @@
 from app import db
 from flask_login import UserMixin
-import jwt
-from time import time
 from passlib.hash import bcrypt_sha256
-import os
+from app import config
+from time import time
+import jwt
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -50,8 +50,17 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return bcrypt_sha256.verify(password, self.password)
     
-    #def get_token(self):
-    #   pass
+    def get_token(self, expires=500):
+        return jwt.encode({'reset_password': self.email, 
+                           'exp': time()+expires},
+                            key=config['SECRET_KEY'])
+
+    def get_user_from_token(token):
+        try: 
+            email = jwt.decode(token, key=config['SECRET_KEY'])
+        except:
+            raise Exception()
+        return User.query.filter_by(email=email).first()
     
     @staticmethod
     def user_from_email(form_email):
@@ -59,7 +68,6 @@ class User(UserMixin, db.Model):
 
     @staticmethod
     def create_user(username, email, password):
-    #create user object
         user = User(
             username=username,
             email=email
@@ -67,3 +75,4 @@ class User(UserMixin, db.Model):
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
+    

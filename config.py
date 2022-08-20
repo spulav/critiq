@@ -5,10 +5,10 @@ load_dotenv()
 
 class Config(object):
     SECRET_KEY = os.environ.get("SECRET_KEY")
-    UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER")
-    DATABASE = os.environ.get("DATABASE")
+    #UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER")
+    #DATABASE = os.environ.get("DATABASE")
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DB_URI")
+    #SQLALCHEMY_DATABASE_URI = os.environ.get("DB_URI")
 
 class ProductionConfig(Config):
     DEBUG = False
