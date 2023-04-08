@@ -19,15 +19,24 @@
 
 <body>
     <nav class='nav nav-pills'> 
-        {{ render_nav_item('auth_bp.home', 'Home') }}
-        {{ render_nav_item('auth_bp.login', 'Log In') }}
-        {{ render_nav_item('auth_bp.signup', 'Sign Up') }}
+        {% if current_user.is_authenticated %}
+            {{ render_nav_item('base_bp.home', 'Home') }}
+            {{ render_nav_item('auth_bp.logout', 'Log Out') }}
+        {% else %}
+            {{ render_nav_item('base_bp.home', 'Home') }}
+            {{ render_nav_item('auth_bp.login', 'Log In') }}
+            {{ render_nav_item('auth_bp.signup', 'Sign Up') }}
+        {% endif %}  
     </nav>
 
 {{ render_messages() }}
 
 {% block content %}
-    <h1>Welcome!</h1>
+    {% if current_user.is_authenticated %}
+        <h1>Welcome! Thanks for Signing In</h1>
+    {% else %}
+        <h1>Welcome! Please Sign Up</h1>
+    {% endif %}
 {% endblock %}
 
 <footer>

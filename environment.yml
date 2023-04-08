@@ -13,8 +13,8 @@ dependencies:
  - passlib[bcrypt]
  - bleach
  - python-dotenv
- - psycopg2
  - pyjwt
  - pip
  - pip:
     - bootstrap-flask
+    - pymysql

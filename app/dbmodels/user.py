@@ -1,7 +1,7 @@
 from app import db
 from flask_login import UserMixin
 from passlib.hash import bcrypt_sha256
-from app import config
+import os
 from time import time
 import jwt
 from dotenv import load_dotenv
@@ -10,26 +10,22 @@ load_dotenv()
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
-    
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
 
     username = db.Column(
-        db.String(),
+        db.String(50),
         nullable=False,
         unique=False
     )
 
     email = db.Column(
-        db.String(),
+        db.String(50),
         nullable=False,
-        unique=True
+        unique=True,
+        primary_key=True
     )
 
     password = db.Column(
-        db.String(),
+        db.String(1000),
         primary_key=False,
         unique=False,
         nullable=False
@@ -53,18 +49,21 @@ class User(UserMixin, db.Model):
     def get_token(self, expires=500):
         return jwt.encode({'reset_password': self.email, 
                            'exp': time()+expires},
-                            key=config['SECRET_KEY'])
+                            key=os.environ.get("SECRET_KEY"))
 
     def get_user_from_token(token):
         try: 
-            email = jwt.decode(token, key=config['SECRET_KEY'])
+            email = jwt.decode(token, key=os.environ.get("SECRET_KEY"))
         except:
             raise Exception()
-        return User.query.filter_by(email=email).first()
+        return User.query.get(email)
+    
+    def get_id(self):
+        return self.email
     
     @staticmethod
     def user_from_email(form_email):
-        return User.query.filter_by(email=form_email).first()
+        return User.query.get(form_email)
 
     @staticmethod
     def create_user(username, email, password):
@@ -75,4 +74,6 @@ class User(UserMixin, db.Model):
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
+
+        return user
     

@@ -32,6 +32,7 @@ def create_app():
     bootstrap.init_app(app)
     mail.init_app(app)
 
+    #import db models for initializing db
     from . import dbmodels
 
     # app context

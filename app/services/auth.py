@@ -18,7 +18,7 @@ def login():
         user = User.user_from_email(form.email.data)
         if user and user.check_password(password=form.password.data):
             login_user(user, remember=form.remember.data)
-            return redirect(url_for('auth_bp.home'))
+            return redirect(url_for('base_bp.home'))
         flash('Invalid username/password combination')
         return redirect(url_for('auth_bp.login'))
     return render_template('auth/form.html', form=form)
@@ -30,13 +30,14 @@ def signup():
         if existing_user is None:
             user = User.create_user(form.username.data, form.email.data, form.password.data)
             login_user(user)
-            return "Success"
+            flash("Success","info")
+            return redirect(url_for('base_bp.home'))
         flash('A user already exists with that email address.')
     return render_template('auth/form.html',form=form)
 
 def logout():
     logout_user()
-    flash('You have successfully logged out.')
+    flash('You have successfully logged out.', "info")
     return redirect(url_for('auth_bp.login'))
 
 def forgot():
