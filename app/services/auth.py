@@ -21,7 +21,7 @@ def login():
             return redirect(url_for('base_bp.home'))
         flash('Invalid username/password combination')
         return redirect(url_for('auth_bp.login'))
-    return render_template('auth/form.html', form=form)
+    return render_template('auth/form.html', form=form, page_title="Critiq Log In")
 
 def signup():
     form = SignUpForm()
@@ -33,7 +33,7 @@ def signup():
             flash("Success","info")
             return redirect(url_for('base_bp.home'))
         flash('A user already exists with that email address.')
-    return render_template('auth/form.html',form=form)
+    return render_template('auth/form.html',form=form, page_title="Critiq Sign Up")
 
 def logout():
     logout_user()
@@ -59,7 +59,7 @@ def forgot():
         else:
             flash("There are no users with this email. Sign up or try again.")
             return redirect(url_for('auth_bp.signup'))
-    return render_template('auth/form.html',form=form)
+    return render_template('auth/form.html',form=form, page_title="Forgot Password")
 
 def newpass(token):
     try: 
@@ -72,4 +72,4 @@ def newpass(token):
     if form.validate_on_submit():
         user.set_password(form.password.data)
         return redirect(url_for('auth_bp.login'))
-    return render_template('auth/form.html', form=form)
+    return render_template('auth/form.html', form=form, page_title="New Password")

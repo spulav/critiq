@@ -17,30 +17,29 @@
 </head>
 
 <body>
-<div class='container'>
+
+{% block nav %}
+<div class='container-fluid'>
     <nav class='navbar navbar-expand-md navbar-light bg-light rounded'> 
-        <a class="navbar-brand" href="{{url_for('base_bp.home')}}">Critiq</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div id="mainNav" class="collapse navbar-collapse">
-            <ul class="navbar-nav mr-auto">
-                {% if current_user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('auth_bp.logout')}}">Logout</a>
-                </li>
-                {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('auth_bp.login')}}">Log In</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('auth_bp.signup')}}">Sign Up</a>
-                </li>
-                {% endif %}
-            </ul>
+        <div class="container-fluid">
+            {% block homenav %} <a class="navbar-brand" href="{{url_for('base_bp.home')}}" aria-current="page">Critiq</a> {% endblock homenav %}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="mainNav" class="collapse navbar-collapse">
+                <div class="navbar-nav me-auto">
+                    {% if current_user.is_authenticated %}
+                    {% block logoutnav %} <a class="nav-link" href="{{url_for('auth_bp.logout')}}">Logout</a> {% endblock logoutnav %}
+                    {% else %}
+                    {% block loginnav %} <a class="nav-link" href="{{url_for('auth_bp.login')}}">Log In</a> {% endblock loginnav %}
+                    {% block signupnav %} <a class="nav-link" href="{{url_for('auth_bp.signup')}}">Sign Up</a> {% endblock signupnav %}
+                    {% endif %}
+                <div>
+            </div>
         </div>
     </nav>
 </div>
+{% endblock nav %}
 
 <div class="container">
 {% for category, message in get_flashed_messages(with_categories=true) %}

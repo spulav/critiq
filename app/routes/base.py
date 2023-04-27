@@ -6,4 +6,4 @@ base_bp = Blueprint(
 
 @base_bp.route('/', methods=['GET'])
 def home():
-    return render_template("base.html")
+    return render_template("base.html",page_title="Critiq")
