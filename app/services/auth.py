@@ -33,7 +33,7 @@ def signup():
             flash("Success","info")
             return redirect(url_for('base_bp.home'))
         flash('A user already exists with that email address.')
-    return render_template('auth/form.html',form=form, page_title="Critiq Sign Up")
+    return render_template('auth/signup.html',form=form, page_title="Critiq Sign Up")
 
 def logout():
     logout_user()

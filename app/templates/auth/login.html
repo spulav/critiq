@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block homenav %} <a class="navbar-brand" href="{{url_for('base_bp.home')}}">Critiq</a> {% endblock homenav %}
+{% block loginnav %} <a class="nav-link" href="{{url_for('auth_bp.login')}}" aria-current="page">Log In</a> {% endblock loginnav %}
