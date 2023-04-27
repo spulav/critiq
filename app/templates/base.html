@@ -1,5 +1,3 @@
-{% from 'bootstrap5/utils.html' import render_messages %}
-{% from 'bootstrap5/nav.html' import render_nav_item %}
 <!doctype html>
 <html lang='en'>
 
@@ -10,7 +8,8 @@
     <meta name="author" content="Svetha Pulavarty">
     
     {% block styles %}
-        {{ bootstrap.load_css() }}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='base_styles.css') }}">
     {% endblock styles %}
 
     <title>{{page_title}}</title>
@@ -18,31 +17,55 @@
 </head>
 
 <body>
-    <nav class='nav nav-pills'> 
-        {% if current_user.is_authenticated %}
-            {{ render_nav_item('base_bp.home', 'Home') }}
-            {{ render_nav_item('auth_bp.logout', 'Log Out') }}
-        {% else %}
-            {{ render_nav_item('base_bp.home', 'Home') }}
-            {{ render_nav_item('auth_bp.login', 'Log In') }}
-            {{ render_nav_item('auth_bp.signup', 'Sign Up') }}
-        {% endif %}  
+<div class='container'>
+    <nav class='navbar navbar-expand-md navbar-light bg-light rounded'> 
+        <a class="navbar-brand" href="{{url_for('base_bp.home')}}">Critiq</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="mainNav" class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('auth_bp.logout')}}">Logout</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('auth_bp.login')}}">Log In</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('auth_bp.signup')}}">Sign Up</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
     </nav>
+</div>
 
-{{ render_messages() }}
+<div class="container">
+{% for category, message in get_flashed_messages(with_categories=true) %}
+    <!-- Categories: primary, secondary, success, danger, warning, info, light, dark -->
+        <div class="alert alert-{{ category }} alert-dismissible" role="alert"> 
+            {{message}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+{% endfor %}
+</div>
 
 {% block content %}
-    {% if current_user.is_authenticated %}
-        <h1>Welcome! Thanks for Signing In</h1>
-    {% else %}
-        <h1>Welcome! Please Sign Up</h1>
-    {% endif %}
+<div class="container">
+{% if current_user.is_authenticated %}
+    <h1>Welcome! Thanks for Signing In</h1>
+{% else %}
+    <h1>Welcome! Please Sign Up</h1>
+{% endif %}
+</div>
 {% endblock %}
 
 <footer>
 
 </footer>
 {% block scripts %}
-    {{ bootstrap.load_js() }}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 {% endblock scripts %}
 </body>

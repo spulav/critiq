@@ -16,5 +16,4 @@ dependencies:
  - pyjwt
  - pip
  - pip:
-    - bootstrap-flask
     - pymysql
