@@ -1,2 +1,18 @@
 {% extends "base.html" %}
 {% block homenav %} <a class="navbar-brand" href="{{url_for('base_bp.home')}}">Critiq</a> {% endblock homenav %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Forgot Password</h1>
+    {{ form.csrf_token }}
+    <form method="POST">
+    {{form.email.label(class_="form-label")}}
+    {{form.email(class_="form-control")}}
+
+    {{form.submit(class_="btn btn-primary")}}
+    </form>
+    <a href="{{url_for('auth_bp.forgot')}}">Forgot Password?</a>
+</div>
+
+{% endblock %}
